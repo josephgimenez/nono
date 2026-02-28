@@ -6,7 +6,7 @@
 #   make check        Run clippy and format check
 #   make release      Build release binaries
 
-.PHONY: all build build-lib build-cli build-ffi test test-lib test-cli test-ffi check clippy clippy-ci fmt clean install help
+.PHONY: all build build-lib build-cli build-ffi test test-lib test-cli test-ffi check clippy clippy-ci fmt clean install help ci-integration test-docker test-docker-integration
 
 # Default target
 all: build
@@ -101,6 +101,19 @@ doc-lib:
 ci: check test
 	@echo "CI checks passed"
 
+# CI + integration tests (used by Docker testing)
+ci-integration: ci build-release-cli
+	./tests/run_integration_tests.sh
+
+# Docker-based Linux testing
+test-docker:
+	docker build -f Dockerfile.test -t nono-test .
+	docker run --rm nono-test make ci
+
+test-docker-integration:
+	docker build -f Dockerfile.test -t nono-test .
+	docker run --rm nono-test
+
 # Help
 help:
 	@echo "nono Makefile targets:"
@@ -126,9 +139,14 @@ help:
 	@echo "  make fmt            Format code"
 	@echo "  make fmt-check      Check formatting"
 	@echo ""
+	@echo "Docker:"
+	@echo "  make test-docker              Unit tests + lint in Linux container"
+	@echo "  make test-docker-integration  Full integration suite on Linux"
+	@echo ""
 	@echo "Other:"
 	@echo "  make install        Install CLI to ~/.cargo/bin"
 	@echo "  make clean          Clean build artifacts"
 	@echo "  make doc            Generate and open documentation"
 	@echo "  make ci             Simulate CI checks"
+	@echo "  make ci-integration CI checks + integration tests"
 	@echo "  make help           Show this help"

@@ -96,6 +96,7 @@ run_suite "$SCRIPT_DIR/integration/test_commands.sh" "Dangerous Commands"
 run_suite "$SCRIPT_DIR/integration/test_edge_cases.sh" "Edge Cases"
 run_suite "$SCRIPT_DIR/integration/test_policy_queries.sh" "Policy Queries"
 run_suite "$SCRIPT_DIR/integration/test_shell.sh" "Shell"
+run_suite "$SCRIPT_DIR/integration/test_credentials.sh" "Credentials"
 
 set -e
 
